@@ -79,7 +79,8 @@ export const getMe = expressAsyncHandler(async (req, res) => {
 });
 
 export const getById = expressAsyncHandler(async (req, res) => {
-  const userId = "663540c7754e76fe79df2b69";
+  // const userId = "663540c7754e76fe79df2b69";
+  const userId = req.params.username;
   const user = await User.findById(userId);
   const token = await user.getJwtToken();
 
@@ -89,6 +90,33 @@ export const getById = expressAsyncHandler(async (req, res) => {
     user,
     token,
   });
+});
+
+
+export const getByUsername = expressAsyncHandler(async (req, res) => {
+  // const userId = "663540c7754e76fe79df2b69";
+  const {username} = req.params;
+  console.log(username);
+  try {
+    
+    const user = await User.findOne({username});
+    // const token = await user.getJwtToken();
+    res.status(200).json({
+      success: true,
+      message: `Welcome ${user.username} `,
+      user,
+      // token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: `try again `,
+    
+      // token,
+    });
+  }
+
 });
 
 
@@ -134,3 +162,68 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+
+
+
+
+
+// random guys 
+
+// Function to generate random username
+const generateRandomUsername = () => {
+  const randomNumber = Math.floor(Math.random() * 1000 * Math.random() * 10);
+  return `user_${randomNumber}`;
+};
+
+// Function to generate random email
+const generateRandomEmail = () => {
+  const randomNumber = Math.floor(Math.random() * 100 * Math.random()*10);
+  return `user_${randomNumber}@example.com`;
+};
+
+// Function to generate random users
+const generateRandomUsers = async (count) => {
+  const users = [];
+  for (let i = 0; i < count; i++) {
+    const randomUsername = generateRandomUsername();
+    const randomEmail = generateRandomEmail();
+    const saltRounds = 7;
+    const hashedPassword = await bcrypt.hash("password", saltRounds); // Set a default password
+    const newUser = new User({
+      fname: "Random",
+      lname: "User",
+      email: randomEmail,
+      username: randomUsername,
+      password: hashedPassword,
+    });
+    await newUser.save();
+    users.push(newUser);
+  }
+  return users;
+};
+
+export const createRandomUsers = expressAsyncHandler(async (req, res) => {
+  const { count } = req.params;
+  const parsedCount = parseInt(count, 10); // Parse the count as an integer
+  if (isNaN(parsedCount)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid count provided",
+    });
+  }
+
+  try {
+    const createdUsers = await generateRandomUsers(parsedCount);
+    res.status(200).json({
+      success: true,
+      message: `Successfully created ${parsedCount} random users`,
+      users: createdUsers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error creating random users",
+      error: error.message,
+    });
+  }
+});
