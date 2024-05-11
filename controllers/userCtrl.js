@@ -36,10 +36,16 @@ export const createUser = async (req, res) => {
       const saltRounds = 7; // Controls how computationally expensive hashing is
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      const user = new User({fname,lname, email, username, password: hashedPassword });
+      const user = new User({
+        fname,
+        lname,
+        email,
+        username,
+        password: hashedPassword,
+      });
       await user.save();
       const token = await user.getJwtToken();
-      
+
       res.status(200).json({
         success: true,
         message: `Welcome ${user.username} `,
@@ -92,14 +98,11 @@ export const getById = expressAsyncHandler(async (req, res) => {
   });
 });
 
-
 export const getByUsername = expressAsyncHandler(async (req, res) => {
   // const userId = "663540c7754e76fe79df2b69";
-  const {username} = req.params;
-  console.log(username);
+  const { username } = req.params;
   try {
-    
-    const user = await User.findOne({username});
+    const user = await User.findOne({ username });
     // const token = await user.getJwtToken();
     res.status(200).json({
       success: true,
@@ -112,13 +115,32 @@ export const getByUsername = expressAsyncHandler(async (req, res) => {
     res.status(400).json({
       success: false,
       message: `try again `,
-    
+
       // token,
     });
   }
-
 });
 
+export const deleteByUsername = expressAsyncHandler(async (req, res) => {
+  // const userId = "663540c7754e76fe79df2b69";
+  const { username } = req.params;
+  try {
+    const user = await User.findOneAndDelete({ username });
+    // const token = await user.getJwtToken();
+    res.status(200).json({
+      success: true,
+      message: `${username} deleted Successfully`,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      success: false,
+      message: `try again `,
+
+      // token,
+    });
+  }
+});
 
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
@@ -163,11 +185,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-
-
-
-
-// random guys 
+// random guys
 
 // Function to generate random username
 const generateRandomUsername = () => {
@@ -177,7 +195,7 @@ const generateRandomUsername = () => {
 
 // Function to generate random email
 const generateRandomEmail = () => {
-  const randomNumber = Math.floor(Math.random() * 100 * Math.random()*10);
+  const randomNumber = Math.floor(Math.random() * 100 * Math.random() * 10);
   return `user_${randomNumber}@example.com`;
 };
 

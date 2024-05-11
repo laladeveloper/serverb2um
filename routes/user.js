@@ -1,5 +1,13 @@
 import express from 'express';
-import { allUsers, createRandomUsers, createUser, getById, getByUsername, getMe, loginUser } from '../controllers/userCtrl.js';
+import {
+  allUsers,
+  createRandomUsers,
+  createUser,
+  deleteByUsername,
+  getByUsername,
+  getMe,
+  loginUser,
+} from "../controllers/userCtrl.js";
 import {protect} from '../middleware/auth.js';
 
 const router = express.Router();
@@ -25,7 +33,7 @@ router.route("/me").get(protect ,getMe);
 // router.route("/:id").get(getById)
 
 // /api/user/:username
-router.route("/:username").get(getByUsername)
+router.route("/:username").get(getByUsername).delete(deleteByUsername)
 
 
 export default router ;
