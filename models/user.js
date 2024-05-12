@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   dob: {
-    type: Date,
+    type: String,
   },
   cnic: {
     type: String,
@@ -59,6 +59,9 @@ const userSchema = new mongoose.Schema({
   products: {
     name: String,
     price: Number,
+  },
+  reqSeller:{
+    type:Boolean
   },
   isVerifiedSeller: {
     type: Boolean,

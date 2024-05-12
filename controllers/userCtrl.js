@@ -187,19 +187,35 @@ export const loginUser = async (req, res) => {
 
 export const sellerReq = async (req, res) => {
   const foundUser = req.user;
-  console.log(foundUser);
+  
   const userId = foundUser?.id;
 
   const { whatsapp, telegram, dob, cnic, passport } = req.body;
   // console.log({ whatsapp, telegram, dob, cnic, passport });
-  const update = { whatsapp, telegram, dob, cnic, passport,role:"seller" };
+  const update = {
+    whatsapp,
+    telegram,
+    dob,
+    cnic,
+    passport,
+    role: "seller",
+    reqSeller: true,
+  };
  
   const user = await User.findByIdAndUpdate(userId, update,{returnOriginal:false});
-// console.log(user);
   res.status(200).json({
     success: true,
-    message: `Hey ${foundUser.username} Your application is Recieved `,
-    foundUser,
-    user,
+    message: `Hey ${foundUser.username}! Your application is Recieved `,
+    
   });
 };
+
+
+export const reqSellers =async (req, res)=>{
+  const reqs = await User.find({reqSeller:true})
+  res.status(200).json({
+    success:true,
+    message:`Here are seller Requests `,
+    reqs
+  })
+}
