@@ -43,11 +43,55 @@ const userSchema = new mongoose.Schema({
   dob: {
     type: Date,
   },
+  cnic: {
+    type: String,
+  },
+  passport: {
+    type: String,
+  },
+  whatsapp: {
+    type: String,
+  },
+  telegram: {
+    type: String,
+  },
   product: [],
   products: {
     name: String,
     price: Number,
   },
+  isVerifiedSeller: {
+    type: Boolean,
+    default: false,
+  },
+  isVerifiedUser: {
+    type: Boolean,
+    default: false,
+  },
+  cnicFront: [
+    {
+      public_id: {
+        type: String,
+        // required: true,
+      },
+      url: {
+        type: String,
+        // required: true,
+      },
+    },
+  ],
+  cnicRear: [
+    {
+      public_id: {
+        type: String,
+        // required: true,
+      },
+      url: {
+        type: String,
+        // required: true,
+      },
+    },
+  ],
 });
 const secretKey = process.env.JWT_SECRET || "your_secret_key_here";
 // JWT TOKEN
