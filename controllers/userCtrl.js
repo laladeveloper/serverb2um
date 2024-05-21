@@ -198,7 +198,7 @@ export const sellerReq = async (req, res) => {
     dob,
     cnic,
     passport,
-    role: "seller",
+    
     reqSeller: true,
   };
  
@@ -217,5 +217,21 @@ export const reqSellers =async (req, res)=>{
     success:true,
     message:`Here are seller Requests `,
     reqs
+  })
+}
+
+export const reqSellersAcp =async (req, res)=>{
+  const {id} = req.params;
+  const update = {
+    reqSeller: false,
+    role: "seller",
+    isVerifiedSeller: true,
+  };
+  const user = await User.findByIdAndUpdate(id, update,{returnOriginal:false});
+
+  res.status(200).json({
+    success:true,
+    message:`${user.username}'s request accepted as Seller and Verified `,
+    
   })
 }

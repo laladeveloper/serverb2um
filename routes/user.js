@@ -7,6 +7,7 @@ import {
   getMe,
   loginUser,
   reqSellers,
+  reqSellersAcp,
   sellerReq,
 } from "../controllers/userCtrl.js";
 import {protect} from '../middleware/auth.js';
@@ -30,6 +31,9 @@ router.route("/regSeller").put(protect,sellerReq)
 
 // /api/user/reqSeller
 router.route("/reqSeller").get(protect,reqSellers)
+
+// /api/user/reqSeller/:id
+router.route("/reqSeller/:id").put(reqSellersAcp);
 
 // /api/user/:username
 router.route("/:username").get(getByUsername).delete(deleteByUsername)
