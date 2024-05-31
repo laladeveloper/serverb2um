@@ -1,8 +1,7 @@
+import bcrypt from "bcrypt";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/user.js";
-import { sendToken } from "../utils/jwt.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import uploadOnCloudinary from "../utils/cloudinary.js";
 
 export const allUsers = async (req, res) => {
   try {
@@ -24,17 +23,27 @@ export const allUsers = async (req, res) => {
 
 export const createUser = async (req, res) => {
   const { fname, lname, email, username, password } = req.body;
-  // console.log(fname, lname, email, username, password);
+  console.log(fname, lname, email, username, password);
   let user = await User.findOne({
     $or: [
       { username },
       { email }, // Check if the input matches the 'email' field as well
     ],
   });
+
   if (!user) {
     try {
       const saltRounds = 7; // Controls how computationally expensive hashing is
       const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      console.log(req.file?.path);
+      const avatarPath = req.file?.path;
+      const avatarPic = await uploadOnCloudinary(avatarPath);
+      console.log(avatarPic);
+      console.log(avatarPic.url);
+      const url = `${avatarPic.secure_url}`;
+      console.log(avatarPic.public_id);
+      const public_id = `${avatarPic.public_id}`;
 
       const user = new User({
         fname,
@@ -42,6 +51,10 @@ export const createUser = async (req, res) => {
         email,
         username,
         password: hashedPassword,
+        avatar: {
+          url,
+          public_id
+        },
       });
       await user.save();
       const token = await user.getJwtToken();
@@ -186,52 +199,89 @@ export const loginUser = async (req, res) => {
 };
 
 export const sellerReq = async (req, res) => {
-  const foundUser = req.user;
-  
-  const userId = foundUser?.id;
+  try {
+    const foundUser = req.user;
 
-  const { whatsapp, telegram, dob, cnic, passport } = req.body;
-  // console.log({ whatsapp, telegram, dob, cnic, passport });
-  const update = {
-    whatsapp,
-    telegram,
-    dob,
-    cnic,
-    passport,
+    const userId = foundUser?.id;
     
-    reqSeller: true,
-  };
- 
-  const user = await User.findByIdAndUpdate(userId, update,{returnOriginal:false});
+    const { whatsapp, telegram, dob, cnic, passport } = req.body;
+    // console.log(req.files);
+    const frontIDPath = req.files?.frontID[0]?.path;
+    const rearIDPath = req.files?.rearID[0]?.path;
+    console.log(frontIDPath);
+    console.log(rearIDPath);
+    // Upload front ID to Cloudinary
+    const frontCNIC = await uploadOnCloudinary(frontIDPath);
+    console.log(frontCNIC);
+    const frontUrl = frontCNIC.secure_url;
+    const frontPublicID = frontCNIC.public_id;
+    // // Upload rear ID to Cloudinary
+    const rearCNIC = await uploadOnCloudinary(rearIDPath);
+    console.log(rearCNIC);
+    const rearUrl = rearCNIC.secure_url;
+    const rearPublicID = rearCNIC.public_id;
+
+    // console.log({ whatsapp, telegram, dob, cnic, passport });
+    const update = {
+      whatsapp,
+      telegram,
+      dob,
+      cnic,
+      passport,
+      cnicFront: {
+        url: frontUrl,
+        public_id: frontPublicID,
+      },
+      cnicRear: {
+        url: rearUrl,
+        public_id: rearPublicID,
+      },
+      reqSeller: true,
+    };
+
+    const user = await User.findByIdAndUpdate(userId, update, {
+      returnOriginal: false,
+    });
+    res.status(200).json({
+      success: true,
+      message: `Hey ${foundUser.username}! Your application is Recieved `,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const reqSellers = async (req, res) => {
+  const reqs = await User.find({ reqSeller: true });
   res.status(200).json({
     success: true,
-    message: `Hey ${foundUser.username}! Your application is Recieved `,
-    
+    message: `Here are seller Requests `,
+    reqs,
   });
 };
 
-
-export const reqSellers =async (req, res)=>{
-  const reqs = await User.find({reqSeller:true})
-  res.status(200).json({
-    success:true,
-    message:`Here are seller Requests `,
-    reqs
-  })
-}
-
-export const reqSellersAcp =async (req, res)=>{
-  const {id} = req.params;
+export const reqSellersAcp = async (req, res) => {
+  const { id } = req.params;
   const update = {
     reqSeller: false,
     role: "seller",
     isVerifiedSeller: true,
   };
-  const user = await User.findByIdAndUpdate(id, update,{returnOriginal:false});
 
-  res.status(200).json({
-    success:true,
-    message:`${user.username}'s request accepted as Seller and Verified `,
-    
-  })
-}
+  try {
+    const user = await User.findByIdAndUpdate(id, update, {
+      returnOriginal: false,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `${user.username}'s request accepted as Seller and Verified `,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `Wrong userID `,
+    });
+  }
+};

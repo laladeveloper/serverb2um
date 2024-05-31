@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import {
   allUsers,
   createUser,
@@ -10,33 +10,40 @@ import {
   reqSellersAcp,
   sellerReq,
 } from "../controllers/userCtrl.js";
-import {protect} from '../middleware/auth.js';
+import { protect } from "../middleware/auth.js";
+import { upload } from "../middleware/multer.js";
 
 const router = express.Router();
 
-// /api/user/all 
+// /api/user/all
 router.route("/all").get(allUsers);
 
-// /api/user/new 
-router.route("/new").post(createUser);
+// /api/user/new
+router.route("/new").post( upload.single("avatar"), createUser);
 
 // /api/user/login
 router.route("/login").post(loginUser);
 
 // /api/user/me
-router.route("/me").get(protect ,getMe);
+router.route("/me").get(protect, getMe);
 
 // /api/user/regSeller
-router.route("/regSeller").put(protect,sellerReq)
+router.route("/regSeller").put(
+  protect,
+  upload.fields([
+    { name: "frontID", maxCount: 1 },
+    { name: "rearID", maxCount: 1 },
+  ]),
+  sellerReq
+);
 
 // /api/user/reqSeller
-router.route("/reqSeller").get(protect,reqSellers)
+router.route("/reqSeller").get(protect, reqSellers);
 
 // /api/user/reqSeller/:id
 router.route("/reqSeller/:id").put(reqSellersAcp);
 
 // /api/user/:username
-router.route("/:username").get(getByUsername).delete(deleteByUsername)
+router.route("/:username").get(getByUsername).delete(deleteByUsername);
 
-
-export default router ;
+export default router;

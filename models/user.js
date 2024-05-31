@@ -60,8 +60,8 @@ const userSchema = new mongoose.Schema({
     name: String,
     price: Number,
   },
-  reqSeller:{
-    type:Boolean
+  reqSeller: {
+    type: Boolean,
   },
   isVerifiedSeller: {
     type: Boolean,
@@ -71,30 +71,18 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  cnicFront: [
-    {
-      public_id: {
-        type: String,
-        // required: true,
-      },
-      url: {
-        type: String,
-        // required: true,
-      },
-    },
-  ],
-  cnicRear: [
-    {
-      public_id: {
-        type: String,
-        // required: true,
-      },
-      url: {
-        type: String,
-        // required: true,
-      },
-    },
-  ],
+  avatar: {
+    url: String,
+    public_id: String,
+  },
+  cnicFront: {
+    url: String,
+    public_id: String,
+  },
+  cnicRear: {
+    url: String,
+    public_id: String,
+  },
 });
 const secretKey = process.env.JWT_SECRET || "your_secret_key_here";
 // JWT TOKEN
