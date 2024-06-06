@@ -2,7 +2,8 @@ import Product from "../models/Product.js";
 
 export const newProduct = async (req, res) => {
   const { name, description, price, category, stock } = req.body;
-  const user = req.user;
+  const seller = req.user;
+  console.log(seller);
   try {
     const product = new Product({
       name,
@@ -10,7 +11,7 @@ export const newProduct = async (req, res) => {
       price,
       category,
       stock,
-      user: user,
+      seller,
     });
     await product.save();
     res.status(201).json({
@@ -44,6 +45,47 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// localhost:4000/api/product/all/seller
+export const getSellerProducts = async (req, res) => {
+  try {
+    const userID = req?.user?.id;
+
+    // Ensure userID is defined
+    if (!userID) {
+      return res.status(400).json({
+        success: false,
+        message: 'User ID is required',
+      });
+    }
+
+    // Find products where the seller field matches the userID
+    const products = await Product.find({ seller: userID });
+
+    // Check if products exist
+    if (products.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'There are no products found',
+        products: [],
+      });
+    }
+
+    // Return found products
+    res.status(200).json({
+      success: true,
+      message: 'All products',
+      products,
+    });
+  } catch (error) {
+    // Handle any errors
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching products',
+      error: error.message,
+    });
+  }
+};
+
 export const getProduct = async (req, res) => {
   const id = req.params.id;
 
@@ -61,3 +103,4 @@ export const getProduct = async (req, res) => {
     });
   }
 };
+    

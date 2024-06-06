@@ -39,11 +39,10 @@ export const createUser = async (req, res) => {
       console.log(req.file?.path);
       const avatarPath = req.file?.path;
       const avatarPic = await uploadOnCloudinary(avatarPath);
-      console.log(avatarPic);
-      console.log(avatarPic.url);
-      const url = `${avatarPic.secure_url}`;
-      console.log(avatarPic.public_id);
-      const public_id = `${avatarPic.public_id}`;
+      
+      const url = `${avatarPic?.secure_url}` || "";
+    
+      const public_id = `${avatarPic?.public_id}` || "";
 
       const user = new User({
         fname,
@@ -88,6 +87,32 @@ export const getMe = expressAsyncHandler(async (req, res) => {
       success: true,
       message: `Welcome back ${me.username}`,
       me,
+    });
+  } else {
+    res.status(200).json({
+      success: false,
+      message: `user not found`,
+    });
+  }
+});
+export const updateMe = expressAsyncHandler(async (req, res) => {
+  const me = req.user;
+  const userID = me?.id;
+  const {fname, lname, username, email} = req.body;
+  // console.log(fname, lname, username, email);
+  const update = { fname, lname, username, email };
+
+
+  if (me) {
+    const updatedMe = await User.findByIdAndUpdate(userID, update, {
+      returnOriginal: false,
+    });
+    const token = await updatedMe.getJwtToken();
+    res.status(200).json({
+      success: true,
+      message: `Succefully updated ${updatedMe.username}`,
+      user:updatedMe,
+      token
     });
   } else {
     res.status(200).json({
@@ -200,24 +225,24 @@ export const loginUser = async (req, res) => {
 
 export const sellerReq = async (req, res) => {
   try {
-    const foundUser = req.user;
-
-    const userId = foundUser?.id;
-    
+    const {id} = req.params;
+    console.log(id);
+    const userId = id;
+    // console.log(userId);
     const { whatsapp, telegram, dob, cnic, passport } = req.body;
     // console.log(req.files);
     const frontIDPath = req.files?.frontID[0]?.path;
     const rearIDPath = req.files?.rearID[0]?.path;
-    console.log(frontIDPath);
-    console.log(rearIDPath);
+    // console.log(frontIDPath);
+    // console.log(rearIDPath);
     // Upload front ID to Cloudinary
     const frontCNIC = await uploadOnCloudinary(frontIDPath);
-    console.log(frontCNIC);
+    // console.log(frontCNIC);
     const frontUrl = frontCNIC.secure_url;
     const frontPublicID = frontCNIC.public_id;
     // // Upload rear ID to Cloudinary
     const rearCNIC = await uploadOnCloudinary(rearIDPath);
-    console.log(rearCNIC);
+    // console.log(rearCNIC);
     const rearUrl = rearCNIC.secure_url;
     const rearPublicID = rearCNIC.public_id;
 
@@ -244,7 +269,7 @@ export const sellerReq = async (req, res) => {
     });
     res.status(200).json({
       success: true,
-      message: `Hey ${foundUser.username}! Your application is Recieved `,
+      message: `Hey ${foundUser?.username}! Your application is Recieved `,
       user,
     });
   } catch (error) {

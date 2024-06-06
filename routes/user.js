@@ -9,6 +9,7 @@ import {
   reqSellers,
   reqSellersAcp,
   sellerReq,
+  updateMe,
 } from "../controllers/userCtrl.js";
 import { protect } from "../middleware/auth.js";
 import { upload } from "../middleware/multer.js";
@@ -25,11 +26,21 @@ router.route("/new").post( upload.single("avatar"), createUser);
 router.route("/login").post(loginUser);
 
 // /api/user/me
-router.route("/me").get(protect, getMe);
+router.route("/me").get(protect, getMe).put(protect, updateMe);
 
 // /api/user/regSeller
 router.route("/regSeller").put(
   protect,
+  upload.fields([
+    { name: "frontID", maxCount: 1 },
+    { name: "rearID", maxCount: 1 },
+  ]),
+  sellerReq
+);
+
+// /api/user/regSeller
+router.route("/regSeller/:id").put(
+  
   upload.fields([
     { name: "frontID", maxCount: 1 },
     { name: "rearID", maxCount: 1 },

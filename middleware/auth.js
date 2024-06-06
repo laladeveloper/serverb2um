@@ -14,10 +14,10 @@ export const protect = asynchandler(async (req, res, next) => {
       // console.log(token);
       // verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      // console.log(decoded);
+      console.log(decoded);
       // get user from token
       req.user = await User.findById(decoded.id).select("-password");
-      // console.log();
+      console.log(req.user);
       // end of middleware
       next();
     } catch (error) {

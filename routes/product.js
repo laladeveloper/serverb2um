@@ -2,6 +2,7 @@ import express from "express";
 import {
   getProduct,
   getProducts,
+  getSellerProducts,
   newProduct,
 } from "../controllers/productCtrl.js";
 import { protect } from "../middleware/auth.js";
@@ -10,6 +11,9 @@ const router = express.Router();
 
 // localhost:4000/api/product/all
 router.route("/all").get(getProducts);
+
+// localhost:4000/api/product/all/seller
+router.route("/all/seller").get(protect,getSellerProducts);
 
 // localhost:4000/api/product/:id
 router.route("/:id").get(getProduct);
