@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/user.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+import { getHtmlTemplate, getloginEmail, sendEmail } from "../utils/sendEmail.js";
 
 export const allUsers = async (req, res) => {
   try {
@@ -36,12 +37,11 @@ export const createUser = async (req, res) => {
       const saltRounds = 7; // Controls how computationally expensive hashing is
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      console.log(req.file?.path);
-      const avatarPath = req.file?.path;
+      const avatarPath = req.file?.path; 
       const avatarPic = await uploadOnCloudinary(avatarPath);
-      
+
       const url = `${avatarPic?.secure_url}` || "";
-    
+
       const public_id = `${avatarPic?.public_id}` || "";
 
       const user = new User({
@@ -52,12 +52,18 @@ export const createUser = async (req, res) => {
         password: hashedPassword,
         avatar: {
           url,
-          public_id
+          public_id,
         },
       });
       await user.save();
       const token = await user.getJwtToken();
-
+      const html = getHtmlTemplate(username);
+      sendEmail(
+        `${user.email}`,
+        "Welcome to B2UM",
+        "Welcome to the world Best platform for buying and selling online assets",
+        html
+      );
       res.status(200).json({
         success: true,
         message: `Welcome ${user.username} `,
@@ -98,10 +104,9 @@ export const getMe = expressAsyncHandler(async (req, res) => {
 export const updateMe = expressAsyncHandler(async (req, res) => {
   const me = req.user;
   const userID = me?.id;
-  const {fname, lname, username, email} = req.body;
+  const { fname, lname, username, email } = req.body;
   // console.log(fname, lname, username, email);
   const update = { fname, lname, username, email };
-
 
   if (me) {
     const updatedMe = await User.findByIdAndUpdate(userID, update, {
@@ -111,8 +116,8 @@ export const updateMe = expressAsyncHandler(async (req, res) => {
     res.status(200).json({
       success: true,
       message: `Succefully updated ${updatedMe.username}`,
-      user:updatedMe,
-      token
+      user: updatedMe,
+      token,
     });
   } else {
     res.status(200).json({
@@ -196,11 +201,11 @@ export const loginUser = async (req, res) => {
         message: `Invalid email or password`,
       });
     }
-    console.log("found user" + user);
+    // console.log("found user" + user);
     // Compare password with hashed password
-    console.log(`Compare password with hashed password`);
+    // console.log(`Compare password with hashed password`);
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log("check password" + isPasswordValid);
+    // console.log("check password" + isPasswordValid);
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
@@ -208,7 +213,14 @@ export const loginUser = async (req, res) => {
       });
     }
     const token = await user.getJwtToken();
-
+    // const username = user?.username;
+    const html = getloginEmail(user.username);
+    sendEmail(
+      `${user.email}`,
+      "Welcome Back to B2UM",
+      "Welcome to the world Best platform for buying and selling online assets",
+      html
+    );
     res.status(200).json({
       success: true,
       message: `Welcome ${user.username} `,
@@ -216,8 +228,9 @@ export const loginUser = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
-      message: "ther is error",
+      message: "there is an error while processing",
       error,
     });
   }
@@ -225,7 +238,7 @@ export const loginUser = async (req, res) => {
 
 export const sellerReq = async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     console.log(id);
     const userId = id;
     // console.log(userId);

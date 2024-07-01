@@ -24,7 +24,7 @@ router.route("/new").post( upload.single("avatar"), createUser);
 
 // /api/user/login
 router.route("/login").post(loginUser);
-
+ 
 // /api/user/me
 router.route("/me").get(protect, getMe).put(protect, updateMe);
 

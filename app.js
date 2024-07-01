@@ -6,6 +6,8 @@ import express from "express";
 import productRoute from "./routes/product.js";
 import userRoute from "./routes/user.js";
 import reviewRoute from "./routes/review.js";
+import categoryRoute from "./routes/category.js";
+
 import { connectDB } from "./utils/features.js";
 
 const app = express();
@@ -17,6 +19,7 @@ app.use(cors());
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
+app.use("/api/category",categoryRoute)
 
 app.get("/", (req, res) => {
   res.send("Saqlain your code is working");
