@@ -24,7 +24,7 @@ export const allUsers = async (req, res) => {
 
 export const createUser = async (req, res) => {
   const { fname, lname, email, username, password } = req.body;
-  console.log(fname, lname, email, username, password);
+  // console.log(fname, lname, email, username, password);
   let user = await User.findOne({
     $or: [
       { username },
@@ -64,6 +64,7 @@ export const createUser = async (req, res) => {
         "Welcome to the world Best platform for buying and selling online assets",
         html
       );
+      
       res.status(200).json({
         success: true,
         message: `Welcome ${user.username} `,

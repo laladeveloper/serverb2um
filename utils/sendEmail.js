@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { log } from "console";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -42,6 +43,7 @@ export const getloginEmail = (username) => {
 export const sendEmail = async (to, subject, text, html) => {
   try {
     // Email options
+    log(`sending email to ${to}`)
     const mailOptions = {
       from: "Info@b2um.com", // Sender address
       to: to, // List of receivers
