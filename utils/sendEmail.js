@@ -41,9 +41,10 @@ export const getloginEmail = (username) => {
 };
 // Function to send an email
 export const sendEmail = async (to, subject, text, html) => {
+  log(`sending email to this user ${to}`)
   try {
     // Email options
-    log(`sending email to this user ${to}`)
+    // log(`sending email to this user ${to}`)
     const mailOptions = {
       from: "Info@b2um.com", // Sender address
       to: to, // List of receivers

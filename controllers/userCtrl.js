@@ -64,7 +64,7 @@ export const createUser = async (req, res) => {
         "Welcome to the world Best platform for buying and selling online assets",
         html
       );
-      
+
       res.status(200).json({
         success: true,
         message: `Welcome ${user.username} `,
@@ -216,6 +216,7 @@ export const loginUser = async (req, res) => {
     const token = await user.getJwtToken();
     // const username = user?.username;
     const html = getloginEmail(user.username);
+    console.log(`sending email`);
     sendEmail(
       `${user.email}`,
       "Welcome Back to B2UM",

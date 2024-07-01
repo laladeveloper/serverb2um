@@ -1,10 +1,12 @@
-import "dotenv/config";
+import path from "path";
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
-import path from "path"; // Add this if you need to resolve the path to the favicon file
-
 import productRoute from "./routes/product.js";
 import userRoute from "./routes/user.js";
 import reviewRoute from "./routes/review.js";
@@ -18,13 +20,13 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
-app.use("/api/category",categoryRoute)
+app.use("/api/category", categoryRoute);
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", (req, res) => {
   res.send("Saqlain your code is working");
