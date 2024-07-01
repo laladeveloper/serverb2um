@@ -22,15 +22,15 @@ export const getAllCategories = async (req, res) => {
 
 export const newCategory = async (req, res) => {
   const { name, description } = req.body;
-  console.log(name, description);
-  console.log(req.files.image);
+  // console.log(name, description);
+  // console.log(req.files.image);
   const imagePath = req.files.image[0]?.path;
   const img = await uploadOnCloudinary(imagePath);
 
   const imgUrl = img.secure_url;
   const imgPublicID = img.public_id;
-  console.log(imgUrl);
-  console.log(imgPublicID);
+  // console.log(imgUrl);
+  // console.log(imgPublicID);
   try {
     const category = new Category({
       name,
