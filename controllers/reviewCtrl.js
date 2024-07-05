@@ -1,4 +1,4 @@
-import Product from "../models/Product.js";
+import { Product } from "../models/product.js";
 import Review from "../models/Review.js";
 import User from "../models/user.js";
 import { getMe } from "./userCtrl.js";

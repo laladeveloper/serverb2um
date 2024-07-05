@@ -2,6 +2,9 @@ import { config } from "dotenv";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import validator from "validator";
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables from .env file
 
 const userSchema = new mongoose.Schema({
   fname: {
@@ -84,8 +87,9 @@ const userSchema = new mongoose.Schema({
     public_id: String,
   },
 });
-const secretKey = process.env.JWT_SECRET || "your_secret_key_here";
+const secretKey = process.env.JWT_SECRET ;
 // JWT TOKEN
+console.log(process.env.JWT_SECRET);
 userSchema.methods.getJwtToken = function () {
   return jwt.sign({ id: this._id }, secretKey, {
     expiresIn: process.env.JWT_EXPIRE + 30 * 24 * 60 * 60 * 1000,

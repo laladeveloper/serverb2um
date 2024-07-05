@@ -3,8 +3,8 @@ import { createTransport } from "nodemailer";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 import { log } from "console";
+import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -44,7 +44,7 @@ export const sendEmail = async (to, subject, text, html) => {
   log(`sending email to this user ${to}`)
   try {
     // Email options
-    // log(`sending email to this user ${to}`)
+    log(`still  sending email `)
     const mailOptions = {
       from: "Info@b2um.com", // Sender address
       to: to, // List of receivers

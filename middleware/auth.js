@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import asynchandler from "express-async-handler";
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables from .env file
 
 export const protect = asynchandler(async (req, res, next) => {
   let token;
@@ -11,10 +14,11 @@ export const protect = asynchandler(async (req, res, next) => {
     try {
       // get token from headers
       token = req.headers.authorization.split(" ")[1];
-      // console.log(token);
+      console.log(token);
+      console.log(token, process.env.JWT_SECRET);
       // verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      // console.log(decoded);
+      console.log(decoded);
       // get user from token
       req.user = await User.findById(decoded.id).select("-password");
       console.log(req.user);

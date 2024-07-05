@@ -25,8 +25,9 @@ export const newCategory = async (req, res) => {
   // console.log(name, description);
   // console.log(req.files.image);
   const imagePath = req.files.image[0]?.path;
+  console.log(imagePath);
   const img = await uploadOnCloudinary(imagePath);
-
+  // console.log(`cloundinay response ${img}`);
   const imgUrl = img.secure_url;
   const imgPublicID = img.public_id;
   // console.log(imgUrl);
@@ -41,6 +42,7 @@ export const newCategory = async (req, res) => {
       },
     });
     await category.save();
+    console.log(category);
     res.status(201).json({
       success: true,
       message: `${category.name} Created Successfully`,

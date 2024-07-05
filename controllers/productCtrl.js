@@ -1,9 +1,9 @@
-import Product from "../models/Product.js";
+import {Product} from "../models/product.js";
 
 export const newProduct = async (req, res) => {
   const { name, description, price, category, stock } = req.body;
   const seller = req.user;
-  console.log(seller);
+  // console.log(seller);
   try {
     const product = new Product({
       name,
@@ -29,6 +29,7 @@ export const newProduct = async (req, res) => {
   }
 };
 
+// localhost:4000/api/product/all
 export const getProducts = async (req, res) => {
   const products = await Product.find();
   if (!products) {

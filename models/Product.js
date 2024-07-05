@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 
 const productSchema = mongoose.Schema({
+  // category: {
+  //   type: mongoose.Schema.ObjectId,
+  //   ref: "Category",
+  //   required: [true, "Please Enter Product Category"],
+  // },
+  category: {
+    type: String,
+    required: [true, "Please Enter Product Category"],
+  },
   name: {
     type: String,
     required: [true, "Please Enter product Name"],
@@ -11,10 +20,21 @@ const productSchema = mongoose.Schema({
     type: String,
     required: [true, "Please Enter product Description"],
   },
+  stock: {
+    type: Number,
+    required: [true, "Please Enter product Stock"],
+    maxLength: [5, "Stock cannot exceed 5 characters"],
+    default: 1,
+  },
   price: {
     type: Number,
     required: [true, "Please Enter product Price"],
     maxLength: [8, "Price cannot exceed 8 characters"],
+  },
+  seller: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    // required: true,
   },
   ratings: {
     type: Number,
@@ -32,16 +52,6 @@ const productSchema = mongoose.Schema({
       },
     },
   ],
-  category: {
-    type: String,
-    required: [true, "Please Enter Product Category"],
-  },
-  stock: {
-    type: Number,
-    required: [true, "Please Enter product Stock"],
-    maxLength: [5, "Stock cannot exceed 5 characters"],
-    default: 1,
-  },
   numOfReviews: {
     type: Number,
     default: 0,
@@ -67,11 +77,6 @@ const productSchema = mongoose.Schema({
       },
     },
   ],
-  seller: {
-    type: mongoose.Schema.ObjectId,
-    ref: "User",
-    // required: true,
-  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -83,6 +88,6 @@ const productSchema = mongoose.Schema({
   },
 });
 
-const Product = mongoose.model("Product", productSchema);
+export const Product = mongoose.model("Product", productSchema);
 
-export default Product;
+// export default Product;
