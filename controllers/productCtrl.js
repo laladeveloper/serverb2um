@@ -1,17 +1,23 @@
-import {Product} from "../models/product.js";
+import Category from "../models/category.js";
+import { Product } from "../models/product.js";
 
+// localhost:4000/api/product/new
 export const newProduct = async (req, res) => {
-  const { name, description, price, category, stock } = req.body;
+  const { name, description, price, category, stock, location, time } = req.body;
   const seller = req.user;
   // console.log(seller);
+  const categoryID = await Category.findById(category)
+  // console.log(categoryID);
   try {
     const product = new Product({
       name,
       description,
       price,
-      category,
+      category:categoryID,
       stock,
       seller,
+      location,
+      deliverIn:time
     });
     await product.save();
     res.status(201).json({
@@ -31,7 +37,10 @@ export const newProduct = async (req, res) => {
 
 // localhost:4000/api/product/all
 export const getProducts = async (req, res) => {
-  const products = await Product.find();
+  // const products = await Product.find();
+  const products = await Product.find()
+  .populate('category')  // Populating the category field
+  .populate('seller');   // Populating the seller field
   if (!products) {
     res.status(200).json({
       success: true,
@@ -55,7 +64,7 @@ export const getSellerProducts = async (req, res) => {
     if (!userID) {
       return res.status(400).json({
         success: false,
-        message: 'User ID is required',
+        message: "User ID is required",
       });
     }
 
@@ -66,7 +75,7 @@ export const getSellerProducts = async (req, res) => {
     if (products.length === 0) {
       return res.status(200).json({
         success: true,
-        message: 'There are no products found',
+        message: "There are no products found",
         products: [],
       });
     }
@@ -74,14 +83,14 @@ export const getSellerProducts = async (req, res) => {
     // Return found products
     res.status(200).json({
       success: true,
-      message: 'All products',
+      message: "All products",
       products,
     });
   } catch (error) {
     // Handle any errors
     res.status(500).json({
       success: false,
-      message: 'An error occurred while fetching products',
+      message: "An error occurred while fetching products",
       error: error.message,
     });
   }
@@ -104,4 +113,3 @@ export const getProduct = async (req, res) => {
     });
   }
 };
-    

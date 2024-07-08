@@ -38,7 +38,7 @@ export const createUser = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
       const avatarPath = req.file?.path; 
-      const avatarPic = await uploadOnCloudinary(avatarPath);
+      const avatarPic = await uploadOnCloudinary(avatarPath,"users/avatar");
 
       const url = `${avatarPic?.secure_url}` || "";
 
@@ -251,12 +251,12 @@ export const sellerReq = async (req, res) => {
     // console.log(frontIDPath);
     // console.log(rearIDPath);
     // Upload front ID to Cloudinary
-    const frontCNIC = await uploadOnCloudinary(frontIDPath);
+    const frontCNIC = await uploadOnCloudinary(frontIDPath,"users/cnic");
     // console.log(frontCNIC);
     const frontUrl = frontCNIC.secure_url;
     const frontPublicID = frontCNIC.public_id;
     // // Upload rear ID to Cloudinary
-    const rearCNIC = await uploadOnCloudinary(rearIDPath);
+    const rearCNIC = await uploadOnCloudinary(rearIDPath,"users/cnic");
     // console.log(rearCNIC);
     const rearUrl = rearCNIC.secure_url;
     const rearPublicID = rearCNIC.public_id;

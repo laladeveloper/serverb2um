@@ -26,7 +26,7 @@ export const newCategory = async (req, res) => {
   // console.log(req.files.image);
   const imagePath = req.files.image[0]?.path;
   console.log(imagePath);
-  const img = await uploadOnCloudinary(imagePath);
+  const img = await uploadOnCloudinary(imagePath, "categories");
   // console.log(`cloundinay response ${img}`);
   const imgUrl = img.secure_url;
   const imgPublicID = img.public_id;
