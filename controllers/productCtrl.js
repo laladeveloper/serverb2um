@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Category from "../models/category.js";
-import  Product  from "../models/product.js";
+import Product from "../models/Product.js";
 
 // localhost:4000/api/product/new
 export const newProduct = async (req, res) => {
