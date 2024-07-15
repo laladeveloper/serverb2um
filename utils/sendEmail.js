@@ -31,12 +31,23 @@ export const getHtmlTemplate = (username) => {
   html = html.replace("{{username}}", username);
   return html;
 };
+
 export const getloginEmail = (username) => {
   let html = fs.readFileSync(
     path.join(__dirname, "../emails/loginEmail.html"),
     "utf8"
   );
   html = html.replace("{{username}}", username);
+  return html;
+};
+
+export const getSignupEmail = (username,otp) => {
+  let html = fs.readFileSync(
+    path.join(__dirname, "../emails/signup.html"),
+    "utf8"
+  );
+  html = html.replace("{{username}}", username);
+  html = html.replace("{{otp}}", otp);
   return html;
 };
 // Function to send an email

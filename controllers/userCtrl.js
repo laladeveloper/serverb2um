@@ -2,7 +2,12 @@ import bcrypt from "bcrypt";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/user.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
-import { getHtmlTemplate, getloginEmail, sendEmail } from "../utils/sendEmail.js";
+import {
+  getHtmlTemplate,
+  getloginEmail,
+  getSignupEmail,
+  sendEmail,
+} from "../utils/sendEmail.js";
 
 export const allUsers = async (req, res) => {
   try {
@@ -37,8 +42,8 @@ export const createUser = async (req, res) => {
       const saltRounds = 7; // Controls how computationally expensive hashing is
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      const avatarPath = req.file?.path; 
-      const avatarPic = await uploadOnCloudinary(avatarPath,"users/avatar");
+      const avatarPath = req.file?.path;
+      const avatarPic = await uploadOnCloudinary(avatarPath, "users/avatar");
 
       const url = `${avatarPic?.secure_url}` || "";
 
@@ -57,7 +62,10 @@ export const createUser = async (req, res) => {
       });
       await user.save();
       const token = await user.getJwtToken();
-      const html = getHtmlTemplate(username);
+      const number = Math.random();
+      const otp = Math.floor( number * 10000)
+
+      const html = getSignupEmail(username, otp);
       sendEmail(
         `${user.email}`,
         "Welcome to B2UM",
@@ -251,12 +259,12 @@ export const sellerReq = async (req, res) => {
     // console.log(frontIDPath);
     // console.log(rearIDPath);
     // Upload front ID to Cloudinary
-    const frontCNIC = await uploadOnCloudinary(frontIDPath,"users/cnic");
+    const frontCNIC = await uploadOnCloudinary(frontIDPath, "users/cnic");
     // console.log(frontCNIC);
     const frontUrl = frontCNIC.secure_url;
     const frontPublicID = frontCNIC.public_id;
     // // Upload rear ID to Cloudinary
-    const rearCNIC = await uploadOnCloudinary(rearIDPath,"users/cnic");
+    const rearCNIC = await uploadOnCloudinary(rearIDPath, "users/cnic");
     // console.log(rearCNIC);
     const rearUrl = rearCNIC.secure_url;
     const rearPublicID = rearCNIC.public_id;

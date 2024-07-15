@@ -1,0 +1,88 @@
+<!-- welcomeEmailTemplate.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to B2UM</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background-color: #16efd6;
+        color: #ffffff;
+        padding: 10px;
+        text-align: center;
+        border-radius: 10px 10px 0 0;
+      }
+      .content {
+        padding: 20px;
+        text-align: left;
+      }
+      .username {
+        font-size: large;
+        font-weight: bold;
+      }
+      .footer {
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        color: #777777;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 20px 0;
+        font-size: 16px;
+        color: #ffffff;
+        background-color: #16efd6;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Welcome to B2UM!</h1>
+      </div>
+      <div class="content">
+        <p>Dear <span class="username"> {{username}} </span> ,</p>
+        <p>Thank you for joining us!</p>
+        <p>Use this OTP to get Started</p>
+        <h1>{{otp}}</h1>
+        <p>
+          We're excited to have you on board. Our service offers you a wide
+          range of features and we are committed to providing you with the best
+          experience possible.
+        </p>
+
+        <p>
+          To get started, please visit our website and log in with your new
+          account. If you have any questions, feel free to reach out to our
+          support team.
+        </p>
+        <p><a href="https://b2um.vercel.app/" class="button">Get Started</a></p>
+        <p>We look forward to seeing you around!</p>
+        <p>Best regards,</p>
+        <p>The Team at B2UM</p>
+      </div>
+      <div class="footer">
+        <p>&copy; 2024 B2UM. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
