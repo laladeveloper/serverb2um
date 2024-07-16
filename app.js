@@ -21,7 +21,12 @@ app.use(express.json());
 
 // app.use(cors());
 // List of allowed origins
-const allowedOrigins = ['http://localhost:5173', 'https://b2um.com', 'https://b2um.vercel.app'];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://b2um.com",
+  "https://b2um.vercel.app",
+  "https://serverb2um.vercel.app",
+];
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -46,15 +51,20 @@ app.use("/api/reviews", reviewRoute);
 app.use("/api/category", categoryRoute);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
 
 // app.get("/", (req, res) => {
 //   res.send("Saqlain your code is working");
 // });
-app.get("/", (req, res) => {
-  res.sendFile(`index.html`)
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(`index.html`);
+// });
+// for production mode from the server side 
+app.use(express.static(path.join(__dirname, "./dist")));
 
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./dist/index.html"));
+});
 const port = process.env.PORT;
 app.listen(port, function listening(req, res) {
   console.log(`Server is running on http://localhost:${port}`);

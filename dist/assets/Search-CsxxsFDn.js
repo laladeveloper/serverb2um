@@ -1,0 +1,1 @@
+import{j as s,I as r}from"./index-ChFFMl3H.js";function a({placeholder:e}){return s.jsxs("div",{className:"home-h-search",children:[s.jsx("input",{type:"text",placeholder:e??"search stuffs in BTUM"}),s.jsx("button",{children:s.jsx(r,{})})]})}export{a as S};
