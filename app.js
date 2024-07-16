@@ -50,16 +50,7 @@ app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/category", categoryRoute);
 
-// Serve static files
-// app.use(express.static(path.join(__dirname, "public")));
-
-// app.get("/", (req, res) => {
-//   res.send("Saqlain your code is working");
-// });
-// app.get("/", (req, res) => {
-//   res.sendFile(`index.html`);
-// });
-// for production mode from the server side 
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, "./dist")));
 
 app.get("*", (req, res) => {

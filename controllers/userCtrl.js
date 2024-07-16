@@ -256,7 +256,7 @@ export const sellerReq = async (req, res) => {
     // console.log(req.files);
     const frontIDPath = req.files?.frontID[0]?.path;
     const rearIDPath = req.files?.rearID[0]?.path;
-    // console.log(frontIDPath);
+    console.log(frontIDPath);
     // console.log(rearIDPath);
     // Upload front ID to Cloudinary
     const frontCNIC = await uploadOnCloudinary(frontIDPath, "users/cnic");
