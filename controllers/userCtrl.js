@@ -261,13 +261,13 @@ export const sellerReq = async (req, res) => {
     // Upload front ID to Cloudinary
     const frontCNIC = await uploadOnCloudinary(frontIDPath, "users/cnic");
     // console.log(frontCNIC);
-    const frontUrl = frontCNIC.secure_url;
-    const frontPublicID = frontCNIC.public_id;
+    const frontUrl = frontCNIC?.secure_url;
+    const frontPublicID = frontCNIC?.public_id;
     // // Upload rear ID to Cloudinary
     const rearCNIC = await uploadOnCloudinary(rearIDPath, "users/cnic");
     // console.log(rearCNIC);
-    const rearUrl = rearCNIC.secure_url;
-    const rearPublicID = rearCNIC.public_id;
+    const rearUrl = rearCNIC?.secure_url;
+    const rearPublicID = rearCNIC?.public_id;
 
     // console.log({ whatsapp, telegram, dob, cnic, passport });
     const update = {

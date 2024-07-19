@@ -51,11 +51,14 @@ app.use("/api/reviews", reviewRoute);
 app.use("/api/category", categoryRoute);
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use(express.static(path.join(__dirname, "./dist")));
+app.use(express.static(path.join(__dirname, "./public")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./dist/index.html"));
-});
+app.get("/",(req,res)=>{
+  res.sendFile(path.resolve(__dirname, "./public/index.html"))
+})
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "./dist/index.html"));
+// });
 const port = process.env.PORT;
 app.listen(port, function listening(req, res) {
   console.log(`Server is running on http://localhost:${port}`);
