@@ -20,11 +20,11 @@ const router = express.Router();
 router.route("/all").get(allUsers);
 
 // /api/user/new
-router.route("/new").post( upload.single("avatar"), createUser);
+router.route("/new").post(upload.single("avatar"), createUser);
 
 // /api/user/login
 router.route("/login").post(loginUser);
- 
+
 // /api/user/me
 router.route("/me").get(protect, getMe).put(protect, updateMe);
 
@@ -39,14 +39,15 @@ router.route("/regSeller").put(
 );
 
 // /api/user/regSeller
-router.route("/regSeller/:id").put(
-  
-  upload.fields([
-    { name: "frontID", maxCount: 1 },
-    { name: "rearID", maxCount: 1 },
-  ]),
-  sellerReq
-);
+router.route("/regSeller/:id").put(sellerReq);
+// router.route("/regSeller/:id").put(
+
+//   upload.fields([
+//     { name: "frontID", maxCount: 1 },
+//     { name: "rearID", maxCount: 1 },
+//   ]),
+//   sellerReq
+// );
 
 // /api/user/reqSeller
 router.route("/reqSeller").get(protect, reqSellers);
