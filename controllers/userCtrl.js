@@ -63,7 +63,7 @@ export const createUser = async (req, res) => {
       await user.save();
       const token = await user.getJwtToken();
       const number = Math.random();
-      const otp = Math.floor( number * 10000)
+      const otp = Math.floor(number * 10000);
 
       const html = getSignupEmail(username, otp);
       sendEmail(
@@ -259,15 +259,15 @@ export const sellerReq = async (req, res) => {
     console.log(frontIDPath);
     // console.log(rearIDPath);
     // Upload front ID to Cloudinary
-    const frontCNIC = await uploadOnCloudinary(frontIDPath, "users/cnic");
-    // console.log(frontCNIC);
-    const frontUrl = frontCNIC?.secure_url;
-    const frontPublicID = frontCNIC?.public_id;
-    // // Upload rear ID to Cloudinary
-    const rearCNIC = await uploadOnCloudinary(rearIDPath, "users/cnic");
-    // console.log(rearCNIC);
-    const rearUrl = rearCNIC?.secure_url;
-    const rearPublicID = rearCNIC?.public_id;
+    // const frontCNIC = await uploadOnCloudinary(frontIDPath, "users/cnic");
+
+    // const frontUrl = frontCNIC?.secure_url;
+    // const frontPublicID = frontCNIC?.public_id;
+
+    // const rearCNIC = await uploadOnCloudinary(rearIDPath, "users/cnic");
+   
+    // const rearUrl = rearCNIC?.secure_url;
+    // const rearPublicID = rearCNIC?.public_id;
 
     // console.log({ whatsapp, telegram, dob, cnic, passport });
     const update = {
@@ -276,14 +276,14 @@ export const sellerReq = async (req, res) => {
       dob,
       cnic,
       passport,
-      cnicFront: {
-        url: frontUrl,
-        public_id: frontPublicID,
-      },
-      cnicRear: {
-        url: rearUrl,
-        public_id: rearPublicID,
-      },
+      // cnicFront: {
+      //   url: frontUrl,
+      //   public_id: frontPublicID,
+      // },
+      // cnicRear: {
+      //   url: rearUrl,
+      //   public_id: rearPublicID,
+      // },
       reqSeller: true,
     };
 
