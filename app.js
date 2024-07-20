@@ -43,8 +43,8 @@ const corsOptions = {
   credentials: true, // Allow credentials (cookies, authorization headers)
 };
 
-app.use(cors(corsOptions));
-
+// app.use(cors(corsOptions));
+app.use(cors())
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
