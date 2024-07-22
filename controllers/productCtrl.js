@@ -74,13 +74,14 @@ export const getSellerProducts = async (req, res) => {
     const products = await Product.find({ seller: userID });
 
     // Check if products exist
-    if (products.length === 0) {
-      return res.status(200).json({
-        success: true,
-        message: "There are no products found",
-        products: [],
-      });
-    }
+    // if (products.length === 0) {
+    //   res.status(200).json({
+    //     success: true,
+    //     message: "There are no products found",
+    //     products: [],
+    //   });
+    //   return;
+    // }
 
     // Return found products
     res.status(200).json({
@@ -127,7 +128,48 @@ export const getProductsByCategory = async (req, res) => {
     if (products) {
       res.status(200).json({
         success: true,
-        message: `products fetched successfully`,
+        message: `products fetched by category successfully`,
+        products,
+      });
+    } else {
+      try {
+        const products = await Category.find({ category });
+        res.status(200).json({
+          success: true,
+          message: `products fetched by category successfully`,
+          products,
+        });
+      } catch (error) {
+        console.log(`error in productctrl 139`);
+        console.log(error);
+        res.send(200).json({
+          success: true,
+          message: `products not found`,
+        });
+      }
+    }
+  } catch (error) {
+    console.log(`there is an error while getprodcuts`);
+    console.log(error);
+  }
+};
+
+export const getProductsByCategoryName = async (req, res) => {
+  const { name } = req.params;
+  console.log(name);
+  // const objectId = new mongoose.Types.ObjectId(category);
+  try {
+    const category = await Category.find({ name });
+
+
+    if (category) {
+      const products = await Product.find({ category })
+      .populate("category") // Populating the category field
+      .populate("seller");
+
+      res.status(200).json({
+        success: true,
+        message: `products fetched by category successfully`,
         products,
       });
     } else {

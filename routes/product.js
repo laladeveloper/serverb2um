@@ -3,6 +3,7 @@ import {
   getProduct,
   getProducts,
   getProductsByCategory,
+  getProductsByCategoryName,
   getProductsByName,
   getSellerProducts,
   newProduct,
@@ -28,6 +29,9 @@ router.route("/new").post(protect, newProduct);
 
 // localhost:4000/api/product/category/:category
 router.route("/category/:category").get(getProductsByCategory);
+
+// localhost:4000/api/product/categoryname/:name
+router.route("/categoryname/:name").get(getProductsByCategoryName);
 
 // localhost:4000/api/product/update
 // remiaining
