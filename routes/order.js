@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allorders, myorders, newOrder } from "../controllers/orderCtrl.js";
+import { allorders, getOrderByID, myorders, newOrder } from "../controllers/orderCtrl.js";
 
 const router = Router();
 
@@ -9,7 +9,10 @@ router.route("/new").post(newOrder);
 // localhost:4000/api/order/all
 router.route("/all").get(allorders);
 
-// localhost:4000/api/order/all
+// localhost:4000/api/order/all/:userid
 router.route("/all/:user").get(myorders);
+
+// localhost:4000/api/order/id/:id
+router.route("/id/:id").get(getOrderByID);
 
 export default router;

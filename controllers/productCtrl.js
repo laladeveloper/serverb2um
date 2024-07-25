@@ -100,9 +100,17 @@ export const getSellerProducts = async (req, res) => {
 };
 
 export const getProduct = async (req, res) => {
-  const id = req.params.id;
-
-  const product = await Product.findById({ id });
+  const { id } = req.params;
+  // console.log(id);
+  const product = await Product.findById(id)
+    .populate("seller")
+    .populate("category");
+  if (!product) {
+    return res.status(400).json({
+      success: false,
+      message: `Product not found, try later `,
+    });
+  }
   if (product) {
     return res.status(200).json({
       success: true,
@@ -161,11 +169,10 @@ export const getProductsByCategoryName = async (req, res) => {
   try {
     const category = await Category.find({ name });
 
-
     if (category) {
       const products = await Product.find({ category })
-      .populate("category") // Populating the category field
-      .populate("seller");
+        .populate("category") // Populating the category field
+        .populate("seller");
 
       res.status(200).json({
         success: true,

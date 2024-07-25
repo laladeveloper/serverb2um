@@ -12,6 +12,7 @@ import userRoute from "./routes/user.js";
 import reviewRoute from "./routes/review.js";
 import categoryRoute from "./routes/category.js";
 import orderRoute from "./routes/order.js";
+import paymentRoute from "./routes/payment.js";
 
 
 import { connectDB } from "./utils/features.js";
@@ -52,6 +53,7 @@ app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/order", orderRoute);
+app.use("/api/payment", paymentRoute);
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, "./public")));

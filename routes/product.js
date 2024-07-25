@@ -19,7 +19,7 @@ router.route("/all").get(getProducts);
 router.route("/all/seller").get(protect, getSellerProducts);
 
 // localhost:4000/api/product/:id
-router.route("/:id").get(getProduct);
+router.route("/id/:id").get(getProduct);
 
 // localhost:4000/api/product/name/:name
 router.route("/name/:name").get(getProductsByName);
