@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Category from "../models/category.js";
 import Product from "../models/Product.js";
+import generateUniqueUID from "../utils/uidGenerator.js";
 
 // localhost:4000/api/product/new
 export const newProduct = async (req, res) => {
@@ -8,10 +9,12 @@ export const newProduct = async (req, res) => {
     req.body;
   const seller = req.user;
   // console.log(seller);
+  const uid =await generateUniqueUID(Product)
   const categoryID = await Category.findById(category);
   // console.log(categoryID);
   try {
     const product = new Product({
+      uid,
       name,
       description,
       price,
@@ -121,6 +124,33 @@ export const getProduct = async (req, res) => {
     return res.status(400).json({
       success: false,
       message: `Product not found, try later `,
+    });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  
+  // console.log(id);
+  const product = await Product.findById(id)
+    .populate("seller")
+    .populate("category");
+  if (!product) {
+    return res.status(400).json({
+      success: false,
+      message: `Product not found,Please try later `,
+    });
+  }
+  if (product) {
+    return res.status(200).json({
+      success: true,
+      message: `${product.name} is here `,
+      product,
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: `Product not found,Please try later `,
     });
   }
 };

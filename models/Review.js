@@ -1,6 +1,10 @@
 import mongoose, { mongo } from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
+  uid: {
+    type: String,
+    required: [true, "Please enter ID"],
+  },
   user: {
     type: mongoose.Schema.ObjectId,
     ref: "User",

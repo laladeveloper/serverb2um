@@ -7,6 +7,7 @@ import {
   getProductsByName,
   getSellerProducts,
   newProduct,
+  updateProduct,
 } from "../controllers/productCtrl.js";
 import { protect } from "../middleware/auth.js";
 
@@ -19,7 +20,7 @@ router.route("/all").get(getProducts);
 router.route("/all/seller").get(protect, getSellerProducts);
 
 // localhost:4000/api/product/:id
-router.route("/id/:id").get(getProduct);
+router.route("/id/:id").get(getProduct).post(updateProduct)
 
 // localhost:4000/api/product/name/:name
 router.route("/name/:name").get(getProductsByName);

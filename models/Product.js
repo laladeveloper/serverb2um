@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const productSchema = mongoose.Schema({
+  uid: {
+    type: String,
+    required: [true, "Please enter ID"],
+  },
   category: {
     type: mongoose.Schema.ObjectId,
     ref: "Category",
@@ -20,7 +24,7 @@ const productSchema = mongoose.Schema({
     type: String,
     required: [true, "Please Enter product Description"],
   },
-  
+
   stock: {
     type: Number,
     required: [true, "Please Enter product Stock"],

@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Category Model
 const CategorySchema = new Schema({
+  uid: {
+    type: String,
+    required: [true, "Please enter ID"],
+  },
   name: { type: String, required: true, unique: true },
   description: String,
   icon: {

@@ -8,6 +8,10 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const chatSchema = new Schema({
+  uid: {
+    type: String,
+    required: [true, "Please enter ID"],
+  },
   userID: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
@@ -16,11 +20,9 @@ const chatSchema = new Schema({
     type: mongoose.Schema.ObjectId,
     ref: "Product",
   },
-  messages: 
-    {
-      type: String,
-    },
-  
+  messages: {
+    type: String,
+  },
 });
 
 const Chat = mongoose.model("Chat", CategorySchema);

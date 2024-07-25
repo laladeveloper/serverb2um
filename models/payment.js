@@ -1,6 +1,10 @@
 import mongoose, { Schema, model } from "mongoose";
 
 const PaymentSchema = new Schema({
+  uid: {
+    type: String,
+    required: [true, "Please enter ID"],
+  },
   order: {
     type: mongoose.Schema.ObjectId,
     ref: "Order",

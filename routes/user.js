@@ -3,6 +3,7 @@ import {
   allUsers,
   createUser,
   deleteByUsername,
+  getById,
   getByUsername,
   getMe,
   loginUser,
@@ -54,6 +55,9 @@ router.route("/reqSeller").get(protect, reqSellers);
 
 // /api/user/reqSeller/:id
 router.route("/reqSeller/:id").put(reqSellersAcp);
+
+// /api/user/:username
+router.route("/id/:id").get(getById)
 
 // /api/user/:username
 router.route("/:username").get(getByUsername).delete(deleteByUsername);

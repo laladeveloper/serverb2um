@@ -8,6 +8,7 @@ import {
   getSignupEmail,
   sendEmail,
 } from "../utils/sendEmail.js";
+import generateUniqueUID from "../utils/uidGenerator.js";
 
 export const allUsers = async (req, res) => {
   try {
@@ -28,6 +29,7 @@ export const allUsers = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
+  const uid = await generateUniqueUID(User);
   const { fname, lname, email, username, password } = req.body;
   // console.log(fname, lname, email, username, password);
   let user = await User.findOne({
@@ -50,6 +52,7 @@ export const createUser = async (req, res) => {
       const public_id = `${avatarPic?.public_id}` || "";
 
       const user = new User({
+        uid,
         fname,
         lname,
         email,
@@ -138,8 +141,8 @@ export const updateMe = expressAsyncHandler(async (req, res) => {
 
 export const getById = expressAsyncHandler(async (req, res) => {
   // const userId = "663540c7754e76fe79df2b69";
-  const userId = req.params.username;
-  const user = await User.findById(userId);
+  const {id} = req.params;
+  const user = await User.findById(id);
   const token = await user.getJwtToken();
 
   res.status(200).json({
@@ -265,7 +268,7 @@ export const sellerReq = async (req, res) => {
     // const frontPublicID = frontCNIC?.public_id;
 
     // const rearCNIC = await uploadOnCloudinary(rearIDPath, "users/cnic");
-   
+
     // const rearUrl = rearCNIC?.secure_url;
     // const rearPublicID = rearCNIC?.public_id;
 

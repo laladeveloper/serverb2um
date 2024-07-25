@@ -1,7 +1,9 @@
 import Order from "../models/order.js";
+import generateUniqueUID from "../utils/uidGenerator.js";
 
 export const newOrder = async (req, res) => {
   const { user, product, seller, quantity } = req.body;
+  const uid =await generateUniqueUID(Order);
   // console.log(user, product, seller,quantity);
   if ((!user, !product, !seller)) {
     return res.status(400).json({
@@ -10,6 +12,7 @@ export const newOrder = async (req, res) => {
     });
   }
   const order = new Order({
+    uid,
     user,
     product,
     seller,
@@ -27,6 +30,7 @@ export const newOrder = async (req, res) => {
 export const allorders = async (req, res) => {
   const orders = await Order.find()
     .populate("user") // Populating the category field
+    .populate("seller") // Populating the category field
     .populate("product");
   res.status(201).json({
     success: true,
@@ -40,6 +44,7 @@ export const myorders = async (req, res) => {
 
   const orders = await Order.find({ user })
     .populate("user") // Populating the category field
+    .populate("seller") // Populating the category field
     .populate("product");
   res.status(201).json({
     success: true,
@@ -53,6 +58,7 @@ export const getOrderByID = async (req, res) => {
 
   const orders = await Order.findById(id)
     .populate("user") // Populating the category field
+    .populate("seller") // Populating the category field
     .populate("product");
   res.status(201).json({
     success: true,

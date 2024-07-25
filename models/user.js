@@ -7,6 +7,10 @@ import dotenv from "dotenv";
 dotenv.config(); // Load environment variables from .env file
 
 const userSchema = new mongoose.Schema({
+  uid: {
+    type: String,
+    required: [true, "Please enter ID"],
+  },
   fname: {
     type: String,
   },
@@ -87,7 +91,7 @@ const userSchema = new mongoose.Schema({
     public_id: String,
   },
 });
-const secretKey = process.env.JWT_SECRET ;
+const secretKey = process.env.JWT_SECRET;
 // JWT TOKEN
 console.log(process.env.JWT_SECRET);
 userSchema.methods.getJwtToken = function () {

@@ -1,5 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import crypto from "crypto"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,6 +49,9 @@ const corsOptions = {
 
 // app.use(cors(corsOptions));
 app.use(cors())
+// app.use(cors({
+//   origin: 'http://localhost:5173', // Replace with your frontend URL
+// }));
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
@@ -61,6 +65,29 @@ app.use(express.static(path.join(__dirname, "./public")));
 app.get("/",(req,res)=>{
   res.sendFile(path.resolve(__dirname, "./public/index.html"))
 })
+
+// app.get("/uid", (req,res)=>{
+//   function generateUniqueId() {
+//     // Define the characters you want to include in the ID
+//     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//     let uniqueId = 'B2';
+  
+//     // Generate 4 additional random characters (since 'B2' is already 2 characters)
+//     for (let i = 0; i < 4; i++) {
+//       const randomIndex = crypto.randomInt(0, characters.length);
+//       uniqueId += characters[randomIndex];
+//     }
+  
+//     return uniqueId;
+//   }
+  
+//   // Example usage
+//   const uid = generateUniqueId();
+//   res.status(201).json({
+//     success:true,
+//     uid
+//   })
+// });
 // app.get("*", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "./dist/index.html"));
 // });

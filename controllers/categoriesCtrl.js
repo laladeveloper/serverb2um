@@ -2,6 +2,7 @@ import express from "express";
 import Category from "../models/category.js";
 import Product from "../models/Product.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+import generateUniqueUID from "../utils/uidGenerator.js";
 
 export const getAllCategories = async (req, res) => {
   try {
@@ -23,8 +24,7 @@ export const getAllCategories = async (req, res) => {
 
 export const newCategory = async (req, res) => {
   const { name, description } = req.body;
-  // console.log(name, description);
-  // console.log(req.files.image);
+  const uid =await generateUniqueUID(Category)
   const imagePath = req.files.image[0]?.path;
   console.log(imagePath);
   const img = await uploadOnCloudinary(imagePath, "categories");
@@ -35,6 +35,7 @@ export const newCategory = async (req, res) => {
   // console.log(imgPublicID);
   try {
     const category = new Category({
+      uid,
       name,
       description,
       icon: {
@@ -59,15 +60,17 @@ export const getAllProCategory = async (req, res) => {
     const products = await Product.find();
      // Extract unique category IDs
      const categoryIds = [...new Set(products.map((product) => product.category))];
-
+     
      // Find categories based on unique IDs
      const categories = await Category.find({ _id: { $in: categoryIds } });
+    //  console.log(categories);
  
 
     res.status(200).json({
       success: true,
       message: `There are following categories`,
       categories,
+      categoryIds
     });
   } catch (error) {
     res.status(400).json({
