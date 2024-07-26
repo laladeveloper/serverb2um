@@ -9,12 +9,16 @@ export const createPaymentIntent = async (req, res) => {
   try {
     const { orderId, amount } = req.body;
     const charges = Number(amount);
-
+    
+    console.log("charges");
     console.log(charges);
+
     const uid = await generateUniqueUID(Payment);
+    console.log("amount, orderId");
     console.log(amount, orderId);
     const order = await Order.findOne({ uid: orderId });
     // console.log(order);
+    console.log("order._id.toString()");
     console.log(order._id.toString());
     // return res.send(order)
     if (!order) {
