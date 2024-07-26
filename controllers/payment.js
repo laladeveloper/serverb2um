@@ -25,6 +25,7 @@ export const createPaymentIntent = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
     const paymentAmount = Math.round(charges * 100); // Convert amount to cents and round to nearest integer
+    console.log("paymentAmount");
     console.log(paymentAmount);
     const paymentIntent = await stripe.paymentIntents.create({
       amount: paymentAmount,

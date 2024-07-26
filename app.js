@@ -47,11 +47,9 @@ const corsOptions = {
   credentials: true, // Allow credentials (cookies, authorization headers)
 };
 
-// app.use(cors(corsOptions));
-app.use(cors())
-// app.use(cors({
-//   origin: 'http://localhost:5173', // Replace with your frontend URL
-// }));
+app.use(cors(corsOptions));
+// app.use(cors())
+
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/reviews", reviewRoute);
