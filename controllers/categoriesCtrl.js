@@ -80,3 +80,76 @@ export const getAllProCategory = async (req, res) => {
     });
   }
 };
+
+// New function to update the image of a category
+export const updateCategory = async (req, res) => {
+  const { categoryId } = req.params;
+  const newImagePath = req.files.image[0]?.path;
+
+  try {
+    // Find the category by ID
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    // Delete the old image from Cloudinary
+    const oldImagePublicID = category.icon.public_id;
+    await cloudinary.v2.uploader.destroy(oldImagePublicID);
+
+    // Upload the new image to Cloudinary
+    const newImage = await uploadOnCloudinary(newImagePath, "categories");
+    const newImageUrl = newImage.secure_url;
+    const newImagePublicID = newImage.public_id;
+
+    // Update the category with the new image details
+    category.icon = {
+      url: newImageUrl,
+      public_id: newImagePublicID,
+    };
+
+    // Save the updated category
+    await category.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Category image updated successfully",
+      category,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating category image",
+      error,
+    });
+  }
+};
+export const getCategoryById = async (req, res) => {
+  try {
+    const products = await Product.find();
+     // Extract unique category IDs
+     const categoryIds = [...new Set(products.map((product) => product.category))];
+     
+     // Find categories based on unique IDs
+     const categories = await Category.find({ _id: { $in: categoryIds } });
+    //  console.log(categories);
+ 
+
+    res.status(200).json({
+      success: true,
+      message: `There are following categories`,
+      categories,
+      categoryIds
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: `there is following error`,
+      error,
+    });
+  }
+};

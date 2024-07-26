@@ -8,40 +8,43 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const createPaymentIntent = async (req, res) => {
   try {
     const { orderId, amount } = req.body;
+    const charges = Number(amount);
+
+    console.log(charges);
     const uid = await generateUniqueUID(Payment);
     console.log(amount, orderId);
-    const order = await Order.find({ uid: orderId });
-    console.log(order);
-    console.log(order[0]._id);
-    // res.send(order)
+    const order = await Order.findOne({ uid: orderId });
+    // console.log(order);
+    console.log(order._id.toString());
+    // return res.send(order)
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-
+    const paymentAmount = Math.round(charges * 100); // Convert amount to cents and round to nearest integer
+    console.log(paymentAmount);
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Number(amount) * 100,
+      amount: paymentAmount,
       currency: "usd",
-      metadata: { orderId: order[0]._id.toString() },
+      metadata: { orderId: order._id.toString() },
     });
 
     const payment = new Payment({
       uid,
-      order: order[0]._id,
+      order: order._id,
       paymentIntentId: paymentIntent.id,
-      amount,
+      amount: charges.toFixed(2),
       currency: "usd",
       status: paymentIntent.status,
     });
 
     await payment.save();
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        client_secret: paymentIntent.client_secret,
-        paymentIntent,
-      });
+    res.status(201).json({
+      success: true,
+      client_secret: paymentIntent.client_secret,
+      paymentIntent,
+      payment,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -39,16 +39,16 @@ router.route("/regSeller").put(
   sellerReq
 );
 
+// router.route("/regSeller/:id").put(sellerReq);
 // /api/user/regSeller
-router.route("/regSeller/:id").put(sellerReq);
-// router.route("/regSeller/:id").put(
+router.route("/regSeller/:id").put(
 
-//   upload.fields([
-//     { name: "frontID", maxCount: 1 },
-//     { name: "rearID", maxCount: 1 },
-//   ]),
-//   sellerReq
-// );
+  upload.fields([
+    { name: "frontID", maxCount: 1 },
+    { name: "rearID", maxCount: 1 },
+  ]),
+  sellerReq
+);
 
 // /api/user/reqSeller
 router.route("/reqSeller").get(protect, reqSellers);

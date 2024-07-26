@@ -10,10 +10,7 @@ const productSchema = mongoose.Schema({
     ref: "Category",
     required: [true, "Please Enter Product Category"],
   },
-  // category: {
-  //   type: String,
-  //   required: [true, "Please Enter Product Category"],
-  // },
+ 
   name: {
     type: String,
     required: [true, "Please Enter product Name"],
@@ -91,6 +88,3 @@ const Product = mongoose.model("Product", productSchema);
 
 export default Product;
 
-//  const Product = mongoose.model("Product", productSchema);
-
-// export default Product;

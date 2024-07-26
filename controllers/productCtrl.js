@@ -9,7 +9,7 @@ export const newProduct = async (req, res) => {
     req.body;
   const seller = req.user;
   // console.log(seller);
-  const uid =await generateUniqueUID(Product)
+  const uid = await generateUniqueUID(Product);
   const categoryID = await Category.findById(category);
   // console.log(categoryID);
   try {
@@ -62,8 +62,10 @@ export const getProducts = async (req, res) => {
 
 // localhost:4000/api/product/all/seller
 export const getSellerProducts = async (req, res) => {
+  // res.send(`request reach`)
+  const { id } = req.body;
   try {
-    const userID = req?.user?.id;
+    const userID = req?.user?.id || id ;
 
     // Ensure userID is defined
     if (!userID) {
@@ -130,7 +132,7 @@ export const getProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  
+
   // console.log(id);
   const product = await Product.findById(id)
     .populate("seller")
@@ -151,6 +153,62 @@ export const updateProduct = async (req, res) => {
     return res.status(400).json({
       success: false,
       message: `Product not found,Please try later `,
+    });
+  }
+};
+
+
+
+export const doesUIDExist = async (req, res) => {
+  try {
+    // Find all products
+    const productsWithoutUID = await Product.find({ uid: { $exists: false } });
+
+    // Iterate over each product and assign a UID
+    // for (const product of productsWithoutUID) {
+    //   const uid = await generateUniqueUID(Product);
+    //   product.uid = uid;
+    //   await product.save();
+    // }
+
+    res.status(200).json({
+      success: true,
+      message: 'UIDs assigned to all products without UID',
+      updatedCount: productsWithoutUID.length,
+      productsWithoutUID
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while assigning UIDs',
+      error: error.message,
+    });
+  }
+};
+
+export const assignUIDsToProducts = async (req, res) => {
+  try {
+    // Find all products
+    const productsWithoutUID = await Product.find({ uid: { $exists: false } });
+
+    // Iterate over each product and assign a UID
+    for (const product of productsWithoutUID) {
+      const uid = await generateUniqueUID(Product);
+      product.uid = uid;
+      await product.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'UIDs assigned to all products without UID',
+      updatedCount: productsWithoutUID.length,
+      productsWithoutUID
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while assigning UIDs',
+      error: error.message,
     });
   }
 };

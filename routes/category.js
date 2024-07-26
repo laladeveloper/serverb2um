@@ -3,6 +3,7 @@ import {
   getAllCategories,
   getAllProCategory,
   newCategory,
+  updateCategory,
 } from "../controllers/categoriesCtrl.js";
 import { upload } from "../middleware/multer.js";
 
@@ -18,5 +19,9 @@ router
 
 // route  /api/category/products
 router.route("/products").get(getAllProCategory)
+
+// route  /api/category/id/:id
+router.route("/id/:id").put(updateCategory)
+
 
 export default router;

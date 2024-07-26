@@ -3,7 +3,7 @@ import generateUniqueUID from "../utils/uidGenerator.js";
 
 export const newOrder = async (req, res) => {
   const { user, product, seller, quantity } = req.body;
-  const uid =await generateUniqueUID(Order);
+  const uid = await generateUniqueUID(Order);
   // console.log(user, product, seller,quantity);
   if ((!user, !product, !seller)) {
     return res.status(400).json({
