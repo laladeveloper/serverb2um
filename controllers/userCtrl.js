@@ -314,7 +314,7 @@ export const sellerReq = async (req, res) => {
     });
     res.status(200).json({
       success: true,
-      message: `Hey ${foundUser?.username}! Your application is Recieved `,
+      message: `Hey ${foundUser?.username}! Your application for seller is Recieved `,
       user,
     });
   } catch (error) {
