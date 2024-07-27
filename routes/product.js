@@ -1,7 +1,9 @@
 import express from "express";
 import {
   assignUIDsToProducts,
-  doesUIDExist,
+  deleteProductById,
+  doesProductUIDExist,
+  doessellerExist,
   getProduct,
   getProducts,
   getProductsByCategory,
@@ -9,7 +11,7 @@ import {
   getProductsByName,
   getSellerProducts,
   newProduct,
-  updateProduct,
+  updateProduct
 } from "../controllers/productCtrl.js";
 import { protect } from "../middleware/auth.js";
 
@@ -19,16 +21,19 @@ const router = express.Router();
 router.route("/all").get(getProducts);
 
 // localhost:4000/api/product/all/uid/no
-router.route("/all/uid/no").get(doesUIDExist);
+router.route("/all/uid/no").get(doesProductUIDExist);
 
 // localhost:4000/api/product/all/uid/assign
 router.route("/all/uid/assign").put(assignUIDsToProducts);
 
+// localhost:4000/api/product/all/seller/no
+router.route("/all/seller/no").get(doessellerExist);
+
 // localhost:4000/api/product/all/seller
 router.route("/all/seller").get(protect, getSellerProducts);
 
-// localhost:4000/api/product/:id
-router.route("/id/:id").get(getProduct).post(updateProduct)
+// localhost:4000/api/product/id/:id
+router.route("/id/:id").get(getProduct).delete(deleteProductById)
 
 // localhost:4000/api/product/name/:name
 router.route("/name/:name").get(getProductsByName);
@@ -44,6 +49,6 @@ router.route("/categoryname/:name").get(getProductsByCategoryName);
 
 // localhost:4000/api/product/update
 // remiaining
-router.route("/update").put();
+router.route("/update").put(updateProduct);
 
 export default router;

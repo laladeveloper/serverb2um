@@ -1,5 +1,7 @@
 import express from "express";
 import {
+  assignUIDsToCategories,
+  doesCategoryUIDExist,
   getAllCategories,
   getAllProCategory,
   newCategory,
@@ -11,6 +13,12 @@ const router = express.Router();
 
 // route  /api/category/all
 router.route("/all").get(getAllCategories);
+
+// route  /api/category/all/uid/no
+router.route("/all/uid/no").get(doesCategoryUIDExist);
+
+// route  /api/category/all/uid/asign
+router.route("/all/uid/asign").get(assignUIDsToCategories);
 
 // route  /api/category/new
 router

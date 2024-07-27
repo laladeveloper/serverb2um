@@ -10,6 +10,8 @@ import {
 } from "../utils/sendEmail.js";
 import generateUniqueUID from "../utils/uidGenerator.js";
 
+
+
 export const allUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -116,6 +118,7 @@ export const getMe = expressAsyncHandler(async (req, res) => {
 export const updateMe = expressAsyncHandler(async (req, res) => {
   const me = req.user;
   const userID = me?.id;
+  console.log(userID);
   const { fname, lname, username, email } = req.body;
   // console.log(fname, lname, username, email);
   const update = { fname, lname, username, email };
@@ -141,16 +144,29 @@ export const updateMe = expressAsyncHandler(async (req, res) => {
 
 export const getById = expressAsyncHandler(async (req, res) => {
   // const userId = "663540c7754e76fe79df2b69";
-  const {id} = req.params;
-  const user = await User.findById(id);
-  const token = await user.getJwtToken();
+  const { id } = req.params;
+  let user;
+  try {
+    user = await User.findOne({uid:id})
+    if (!user) {
+      console.log(`!user statement run`);
+      user = await User.findById( id );
+    }
+    const token = await user.getJwtToken();
 
-  res.status(200).json({
-    success: true,
-    message: `Welcome ${user.username} `,
-    user,
-    token,
-  });
+    res.status(200).json({
+      success: true,
+      message: `Welcome ${user.username} `,
+      user,
+      token,
+    });
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: `User id does not exist `,
+      error
+    });
+  }
 });
 
 export const getByUsername = expressAsyncHandler(async (req, res) => {
@@ -227,13 +243,16 @@ export const loginUser = async (req, res) => {
     const token = await user.getJwtToken();
     // const username = user?.username;
     const html = getloginEmail(user.username);
-    console.log(`sending email`);
-    sendEmail(
-      `${user.email}`,
-      "Welcome Back to B2UM",
-      "Welcome to the world Best platform for buying and selling online assets",
-      html
-    );
+    if (process.env.SMTP_PORT) {
+      console.log(`sending email`);
+      sendEmail(
+        `${user.email}`,
+        "Welcome Back to B2UM",
+        "Welcome to the world Best platform for buying and selling online assets",
+        html
+      );
+    }
+  
     res.status(200).json({
       success: true,
       message: `Welcome ${user.username} `,
@@ -333,6 +352,73 @@ export const reqSellersAcp = async (req, res) => {
     res.status(400).json({
       success: false,
       message: `Wrong userID `,
+    });
+  }
+};
+
+
+export const doesUserUIDExist = async (req, res) => {
+  try {
+    // Find all products
+    const usersWithoutUID = await User.find({ uid: { $exists: false } });
+
+    // Iterate over each product and assign a UID
+    // for (const product of productsWithoutUID) {
+    //   const uid = await generateUniqueUID(Product);
+    //   product.uid = uid;
+    //   await product.save();
+    // }
+
+    res.status(200).json({
+      success: true,
+      message: "These users dont't have uid",
+      updatedCount: usersWithoutUID.length,
+      usersWithoutUID,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while assigning UIDs",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export const assignUIDsToUsers = async (req, res) => {
+  try {
+    // Find all products
+    const usersWithoutUID = await User.find({ uid: { $exists: false } });
+    let updatedCount = 0;
+
+    // Iterate over each user and assign a UID
+    for (const user of usersWithoutUID) {
+      // Validate username before assigning UID
+      if (!user.username || user.username.length < 4) {
+        console.warn(`Skipping user with invalid username: ${user.username}`);
+        continue; // Skip this user and continue with the next one
+      }
+
+      const uid = await generateUniqueUID(User);
+      user.uid = uid;
+      await user.save();
+      updatedCount++;
+    }
+
+
+    res.status(200).json({
+      success: true,
+      message: `UIDs assigned to all ${usersWithoutUID.length} users without UID`,
+      updatedCount: usersWithoutUID.length,
+      usersWithoutUID,
+      updatedCount
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while assigning UIDs",
+      error: error.message,
     });
   }
 };

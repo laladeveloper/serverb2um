@@ -14,13 +14,17 @@ export const protect = asynchandler(async (req, res, next) => {
     try {
       // get token from headers
       token = req.headers.authorization.split(" ")[1];
-      console.log(token);
-      console.log(token, process.env.JWT_SECRET);
+      // console.log(token);
+      // console.log(token, process.env.JWT_SECRET);
       // verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("decoded");
       console.log(decoded);
+      console.log("decoded.id");
+      console.log(decoded.id);
       // get user from token
       req.user = await User.findById(decoded.id).select("-password");
+      console.log("req.user");
       console.log(req.user);
       // end of middleware
       next();

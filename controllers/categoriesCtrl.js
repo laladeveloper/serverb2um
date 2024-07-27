@@ -153,3 +153,52 @@ export const getCategoryById = async (req, res) => {
     });
   }
 };
+
+
+export const doesCategoryUIDExist = async (req, res) => {
+  try {
+    // Find all products
+    const categoriesWithoutUID = await Category.find({ uid: { $exists: false } });
+
+
+    res.status(200).json({
+      success: true,
+      message: `These ${categoriesWithoutUID.length} categories are without UIDs`,
+      updatedCount: categoriesWithoutUID.length,
+      categoriesWithoutUID,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while geting categories UIDs",
+      error: error.message,
+    });
+  }
+};
+
+export const assignUIDsToCategories = async (req, res) => {
+  try {
+    // Find all products
+    const categoriesWithoutUID = await Category.find({ uid: { $exists: false } });
+
+    // Iterate over each product and assign a UID
+    for (const category of categoriesWithoutUID) {
+      const uid = await generateUniqueUID(Category);
+      category.uid = uid;
+      await category.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `UIDs assigned to all ${categoriesWithoutUID.length} categories without UID`,
+      updatedCount: categoriesWithoutUID.length,
+      categoriesWithoutUID,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while assigning UIDs",
+      error: error.message,
+    });
+  }
+};

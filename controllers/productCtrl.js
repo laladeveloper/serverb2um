@@ -8,7 +8,7 @@ export const newProduct = async (req, res) => {
   const { name, description, price, category, stock, location, time } =
     req.body;
   const seller = req.user;
-  // console.log(seller);
+  console.log(seller);
   const uid = await generateUniqueUID(Product);
   const categoryID = await Category.findById(category);
   // console.log(categoryID);
@@ -65,7 +65,7 @@ export const getSellerProducts = async (req, res) => {
   // res.send(`request reach`)
   const { id } = req.body;
   try {
-    const userID = req?.user?.id || id ;
+    const userID = req?.user?.id || id;
 
     // Ensure userID is defined
     if (!userID) {
@@ -107,9 +107,17 @@ export const getSellerProducts = async (req, res) => {
 export const getProduct = async (req, res) => {
   const { id } = req.params;
   // console.log(id);
-  const product = await Product.findById(id)
+  let product;
+
+  product = await Product.findOne({ uid: id })
     .populate("seller")
     .populate("category");
+  if (!product && id.length > 8) {
+    product = await Product.findById(id)
+      .populate("seller")
+      .populate("category");
+  }
+
   if (!product) {
     return res.status(400).json({
       success: false,
@@ -121,6 +129,7 @@ export const getProduct = async (req, res) => {
       success: true,
       message: `${product.name} is here `,
       product,
+      idLength:id.length
     });
   } else {
     return res.status(400).json({
@@ -131,10 +140,19 @@ export const getProduct = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
-  const { id } = req.params;
-
+  // const { id } = req.params;
+  const { name, description, price, category, stock, location, time, id } =
+    req.body;
   // console.log(id);
-  const product = await Product.findById(id)
+  const product = await Product.findByIdAndUpdate(id, {
+    name,
+    description,
+    price,
+    category,
+    stock,
+    location,
+    time,
+  })
     .populate("seller")
     .populate("category");
   if (!product) {
@@ -157,9 +175,67 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+export const deleteProductById = async (req, res) => {
+  const { id } = req.params;
+  let product;
+  product = await Product.findOneAndDelete({ uid: id })
+    .populate("seller")
+    .populate("category");
+  if (!product && id.length > 8) {
+    product = await Product.findByIdAndDelete(id)
+      .populate("seller")
+      .populate("category");
+  }
+  // console.log(id);
 
+  if (!product) {
+    return res.status(400).json({
+      success: false,
+      message: `Product not found,Please try later `,
+    });
+  }
+  if (product) {
+    return res.status(200).json({
+      success: true,
+      message: `${product.name} is Deleted Succesfully `,
+      product,
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: `Product not found,Please try later `,
+    });
+  }
+};
 
-export const doesUIDExist = async (req, res) => {
+export const doessellerExist = async (req, res) => {
+  try {
+    // Find all products
+    const productsWithoutSeller = await Product.find();
+
+    // Iterate over each product and assign a UID
+    // for (const product of productsWithoutUID) {
+    //   const uid = await generateUniqueUID(Product);
+    //   product.uid = uid;
+    //   await product.save();
+    // }
+
+    res.status(200).json({
+      success: true,
+      message: "UIDs assigned to all products without UID",
+      updatedCount: productsWithoutSeller.length,
+      productsWithoutSeller,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while assigning UIDs",
+      error: error.message,
+    });
+  }
+};
+
+export const doesProductUIDExist = async (req, res) => {
   try {
     // Find all products
     const productsWithoutUID = await Product.find({ uid: { $exists: false } });
@@ -173,14 +249,14 @@ export const doesUIDExist = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'UIDs assigned to all products without UID',
+      message: "UIDs assigned to all products without UID",
       updatedCount: productsWithoutUID.length,
-      productsWithoutUID
+      productsWithoutUID,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'An error occurred while assigning UIDs',
+      message: "An error occurred while assigning UIDs",
       error: error.message,
     });
   }
@@ -200,14 +276,14 @@ export const assignUIDsToProducts = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'UIDs assigned to all products without UID',
+      message: "UIDs assigned to all products without UID",
       updatedCount: productsWithoutUID.length,
-      productsWithoutUID
+      productsWithoutUID,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'An error occurred while assigning UIDs',
+      message: "An error occurred while assigning UIDs",
       error: error.message,
     });
   }
