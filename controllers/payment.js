@@ -7,30 +7,26 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
   try {
-    const { orderId, amount } = req.body;
+    const { orderId, amount, currency } = req.body;
     const charges = Number(amount);
-    
-    console.log("charges");
-    console.log(charges);
 
     const uid = await generateUniqueUID(Payment);
-    console.log("amount, orderId");
-    console.log(amount, orderId);
-    const order = await Order.findOne({ uid: orderId });
-    // console.log(order);
-    console.log("order._id.toString()");
-    console.log(order._id.toString());
-    // return res.send(order)
+
+    const order = await Order.findOne({ uid: orderId })
+      .populate("user") // Populating the category field
+      .populate("seller") // Populating the category field
+      .populate("product");
+    const customer = order.user.username;
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
     const paymentAmount = Math.round(charges * 100); // Convert amount to cents and round to nearest integer
-    console.log("paymentAmount");
-    console.log(paymentAmount);
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: paymentAmount,
-      currency: "usd",
+      currency,
       metadata: { orderId: order._id.toString() },
+     
     });
 
     const payment = new Payment({

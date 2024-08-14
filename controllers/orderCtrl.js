@@ -1,4 +1,6 @@
 import Order from "../models/order.js";
+import User from "../models/user.js";
+import Product from "../models/Product.js";
 import generateUniqueUID from "../utils/uidGenerator.js";
 
 export const newOrder = async (req, res) => {
@@ -11,6 +13,27 @@ export const newOrder = async (req, res) => {
       message: "Something Missing, Please Try Later",
     });
   }
+  const userData = await User.findById(user);
+  const sellerData = await User.findById(seller);
+  const productData = await Product.findById(product);
+  if ((!userData )) {
+    return res.status(400).json({
+      success: false,
+      message: "User Data is Missing, Please Try Later",
+    });
+  };
+  if (( !productData)) {
+    return res.status(400).json({
+      success: false,
+      message: "Product Data is Missing, Please Try Later",
+    });
+  };
+  if (( !sellerData)) {
+    return res.status(400).json({
+      success: false,
+      message: "Seller Data is  Missing, Please Try Later",
+    });
+  };
   const order = new Order({
     uid,
     user,
